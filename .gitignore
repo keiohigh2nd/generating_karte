@@ -4,5 +4,6 @@ tmp/
 *.pyc
 view/*
 !index.html
+!app.js
 
 

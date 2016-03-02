@@ -79,17 +79,18 @@ if __name__ == "__main__":
         dd = v.fit_transform(v_list).toarray()
 
 	#delete dictionary vector 
-	dd = np.delete(dd, 0, 0)
+	dd = np.delete(dd, -1, 0)
 
 	#split per patient
-	dd = np.hsplit(dd, N)
+	dd = np.vsplit(dd, N)
+
 
 	i = 0
 	for d in dd:
+		print d.shape
 		in_out.save_vector(d, "sample_patient-%s"%i)
 		i += 1
 
-	print dd
 	"""	
 	for t in xrange(len(p_json)):
 		print calc_similarity.cos_similarity(dd[t],dd[t+1])

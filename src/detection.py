@@ -12,3 +12,6 @@ def frequent_words(tokens, text):
 def word_count(tokens):
 	tokens_l = [w.lower() for w in tokens]
 	return len(set(tokens_l))
+
+
+

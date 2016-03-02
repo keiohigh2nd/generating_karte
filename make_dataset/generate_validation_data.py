@@ -91,11 +91,11 @@ def randomPatient():
 
         #時系列ごとに疾患が増えて行 -> MD commentの所に加えて行く
         for t in xrange(Time_points):
-		random_int = random.randint(1,10)
+		random_int = random.randint(1,5)
         	dig_code = randomText(random_int, icd9_words[dic_id])
         	ana_pos = randomText(random_int, rad_words[dic_id])
 		if int(t) == int(change_id):
-			tmp_Triage = dig_code + ana_pos + randomText(random_int + 10, wjn_words[dic_id])
+			tmp_Triage = dig_code + ana_pos + randomText(random_int + 100, wjn_words[dic_id])
 		else:	
 			tmp_Triage = dig_code + ana_pos + randomText(random_int, wjn_words[dic_id])
                 tmp += tmp_Triage

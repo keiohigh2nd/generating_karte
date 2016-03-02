@@ -7,8 +7,9 @@ import in_out
 import numpy as np
 from sklearn.feature_extraction import DictVectorizer
 
-def read_json():
-        f = open('tmp/json_time_series_patient.json', 'r')
+def read_json(filename):
+        #f = open('tmp/json_time_series_patient.json', 'r')
+        f = open(filename, 'r')
         jsonData = json.load(f,"utf-8")
         text = json.dumps(jsonData)
         f.close()
@@ -60,9 +61,10 @@ def make_dictionary():
 if __name__ == "__main__":
 	#number of patients !!!
 	N = 3
-	dic_texts = make_dictionary()
+        file_name = 'make_dataset/sample/json_time_series_patient.json'
 
-        documents, p_json  = read_json()
+	dic_texts = make_dictionary()
+        documents, p_json  = read_json(file_name)
 
 	
 	v_list = []

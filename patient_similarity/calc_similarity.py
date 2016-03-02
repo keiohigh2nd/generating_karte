@@ -5,6 +5,10 @@ import os
 def cos_similarity(a, b):
 	return  dot(a,b.T)/linalg.norm(a)/linalg.norm(b)
 
+def similarity_patients(patients, p_json):
+	for patient_x in patients:
+		for patient_y in patients:
+			cos_similatiry(patient_x, patient_y)
 
 if __name__ == "__main__":
 	patients_data_dir = 'dic_output'

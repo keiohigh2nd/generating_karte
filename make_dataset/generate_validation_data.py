@@ -88,6 +88,7 @@ def randomPatient():
 	pat_id = randomString()
 	dic_id = random.randint(0, DIV_N-1) 
 	change_id = random.randint(0, Time_points-1)
+
         #時系列ごとに疾患が増えて行 -> MD commentの所に加えて行く
         for t in xrange(Time_points):
 		random_int = random.randint(1,10)
@@ -109,10 +110,17 @@ def randomPatient():
 				"Time" : t,
 				"dictionary_id" : dic_id,
 				"change_point" : change_id
-		}
+			}
 		p_dict[t] = t_dict
+
+	label = {}
+	label = {
+			"patient_id": pat_id,
+			"dictionary_id" : dic_id,
+                        "change_point" : change_id
+		}
                 
-        return p_dict
+        return p_dict, label
 
 def generate_patients(n):
     for _ in xrange(n):
@@ -130,14 +138,18 @@ if __name__ == "__main__":
         sys.exit()
 
     pat_dics = {}
+    p_labels = {}
     for t in xrange(n):
-        pat_dics[t] = randomPatient()
+        pat_dics[t], p_labels[t] = randomPatient()
 
 
-    jsonstring = json.dumps(pat_dics, ensure_ascii=False)
+    #jsonstring = json.dumps(pat_dics, ensure_ascii=False)
+    #label_jsonstring = json.dumps(p_labels, ensure_ascii=False)
 
     f = codecs.open("make_dataset/sample/json_time_series_patient.json","w","utf-8")
+    f_label = codecs.open("make_dataset/sample/p_labels.json","w","utf-8")
     #f = open("tmp/json_time_series_patient.json", "w")
     json.dump(pat_dics, f, ensure_ascii=False)
+    json.dump(p_labels, f_label, ensure_ascii=False)
 
     

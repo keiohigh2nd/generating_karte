@@ -66,16 +66,15 @@ if __name__ == "__main__":
 	p_text, p_json  = read_json()
 	tokens, text = detection.text_to_tokens(p_text)
 	tmp = detection.word_count(tokens)
-	print p_json["1"]["MDcomments"]
-
 
 	MD_wc_list = []
 	Triage_wc_list = []
 	Chief_wc_list = []
 
-	for t in xrange(len(p_json)):
-		MD_wc_list.append(detection.word_count(p_json["%s"%t]["MDcomments"]))
-		Triage_wc_list.append(detection.word_count(p_json["%s"%t]["TriageAssessment"]))
-		Chief_wc_list.append(detection.word_count(p_json["%s"%t]["ChiefComplaint"]))
+	## Only one sample patient
+	for t in xrange(len(p_json["0"])):
+		MD_wc_list.append(detection.word_count(p_json["0"]["%s"%t]["MDcomments"]))
+		Triage_wc_list.append(detection.word_count(p_json["0"]["%s"%t]["TriageAssessment"]))
+		Chief_wc_list.append(detection.word_count(p_json["0"]["%s"%t]["ChiefComplaint"]))
 
 	convert_to_json(MD_wc_list, Triage_wc_list, Chief_wc_list)

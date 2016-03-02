@@ -1,4 +1,5 @@
 # Generating_karte
+This repository is for the purpose of research in medical records processing.
 
 #Patient History View
 1st step:
@@ -13,3 +14,4 @@
 	python make_dataset/generate_validation_data.py n
 2nd step:
 	python patient_similarity/calc_similarity.py
+

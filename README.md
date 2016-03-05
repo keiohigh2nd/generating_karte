@@ -20,4 +20,9 @@ This repository is for the purpose of research in medical records processing.
  
 3rd step:Validating dataset
 	python patient_similarity/main.py
+	-> validating dictionary ids and changing points
+
+4st step: Visualizing Similarity Patients
+	python patient_similarity/find_high_frequency.py
+	-> tree.html is showing the high frequency words between similar patients
 

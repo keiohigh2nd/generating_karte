@@ -16,7 +16,7 @@ if __name__ == "__main__":
 	documents, p_labels = make_dictionary.read_json('make_dataset/sample/p_labels.json')
 
 	#Calculation of Similarity
-	#calc_similarity.similarity_patients(patients, p_labels)
+	calc_similarity.similarity_patients(patients, p_labels)
 
 	#Validate Timepint
 	calc_similarity.validate_timepoints(patients, p_labels)

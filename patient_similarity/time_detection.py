@@ -16,7 +16,7 @@ def detection(patient):
 			time_stamp = t
 
 	print "The change point is %s" % (time_stamp + 1)
-	return time_stamp
+	return time_stamp + 1
 
 if __name__ == "__main__":
 

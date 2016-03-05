@@ -6,6 +6,8 @@ import calc_similarity
 import in_out
 import numpy as np
 from sklearn.feature_extraction import DictVectorizer
+import pickle
+import sys
 
 def read_json(filename):
         #f = open('tmp/json_time_series_patient.json', 'r')
@@ -19,7 +21,7 @@ def preprocess(text):
 	return	
 
 def vectorization(text):
-	texts = text.strip("\r")
+	texts = text.split(" ")
 	tmp = collections.Counter(texts)
 	return tmp
 
@@ -56,6 +58,16 @@ def make_dictionary():
 	tmp_24 = tmp_24.split("\n")
 	del tmp_24[-1]
 
+	"""
+        tt = collections.Counter(tmp_1 + tmp_24 + tmp_3)
+
+	i = 0
+	for tm in tt:
+		print tm
+		i += 1
+		if i > 50:
+			break
+	"""
         return collections.Counter(tmp_1 + tmp_24 + tmp_3)
 
 if __name__ == "__main__":
@@ -66,7 +78,6 @@ if __name__ == "__main__":
 	dic_texts = make_dictionary()
         documents, p_json  = read_json(file_name)
 
-	
 	v_list = []
 	for t in xrange(len(p_json)):	
 		v_tmp = []
@@ -74,9 +85,16 @@ if __name__ == "__main__":
 			v_tmp = vectorization(p_json["%s"%t]["%s"%pat]["MDcomments"])
 			v_list.append(v_tmp)
 
+	###毎回違う患者が来るたびに辞書の番号が変更されていないか？
 	v_list.append(dic_texts)
 	v = DictVectorizer()
         dd = v.fit_transform(v_list).toarray()
+
+	##辞書の順番と単語を保存
+	#vv = v.inverse_transform(dd) 
+	t = v.get_feature_names()
+	with open('tmp/dictionary_words.pickle', 'wb') as f:
+		pickle.dump(t, f)
 
 	#delete dictionary vector 
 	dd = np.delete(dd, -1, 0)

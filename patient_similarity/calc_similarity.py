@@ -23,7 +23,9 @@ def validate_timepoints(patients, p_labels):
 	for patient in patients:
 		print p_labels["%s"%i]["change_point"]
 		if p_labels["%s"%i]["change_point"] == time_detection.detection(patient):
-			print "yes"
+			print "Detect Sucess"
+		else:
+			print "Detect Failed"
 		i += 1
 
 def validate_all_similarity(ids, patients, p_labels):
@@ -46,9 +48,9 @@ def validate_all_similarity(ids, patients, p_labels):
 	#Validation of dictionary
 	for p in xrange(len(p_labels)):
 		if p_labels["%s"%p]["dictionary_id"] == min_id_lists[p]:
-			print "From same dictionary"
+			print "Dictionary Unmathced"
 		else:
-			print "Wrong"
+			print "Dictionary Matached"
 
 
 def similarity_patients(patients, p_labels):

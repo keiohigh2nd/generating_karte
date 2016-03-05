@@ -4,6 +4,7 @@ tmp/
 *.pyc
 view/*
 !index.html
+!tree.html
 !app.js
 dic_output
 .DS_Store

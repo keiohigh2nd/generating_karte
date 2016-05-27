@@ -1,4 +1,3 @@
-data/
 sample/
 tmp/
 *.pyc
@@ -12,4 +11,5 @@ dic_output
 small_data/
 make_dataset/small
 output
+
 

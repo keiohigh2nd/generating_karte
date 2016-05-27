@@ -11,4 +11,5 @@ dic_output
 .git
 small_data/
 make_dataset/small
+output
 

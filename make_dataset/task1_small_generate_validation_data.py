@@ -49,10 +49,10 @@ def devide_dictionary(words, div_n):
  
 random.seed(2014)
 
-icd9_words = read_file('data/icd9_words_only.txt')
-rad_words = read_file('data/rad_words_only.txt')
-wjn_words = read_file('data/wjn_words_only.txt')
-come_words = read_file('data/come_words_only.txt')
+icd9_words = read_file('small_data/icd9_words_only.txt')
+rad_words = read_file('small_data/rad_words_only.txt')
+wjn_words = read_file('small_data/wjn_words_only.txt')
+come_words = read_file('small_data/come_words_only.txt')
 
 
 icd9_words = icd9_words.split("\r\n")
@@ -70,8 +70,6 @@ wjn_words = file('data/wjn_words_only.txt').read().splitlines()
 rad_words = file('data/rad_words_only.txt').read().splitlines()
 icd9_words = file('data/icd9_words_only.txt').read().splitlines()
 come_words = file('data/come_words_only.txt').read().splitlines()
-"""
-
 DIV_N = 30
 #Japanese words
 wjn_words = devide_dictionary(wjn_words, DIV_N)
@@ -81,7 +79,7 @@ rad_words = devide_dictionary(rad_words, DIV_N)
 icd9_words = devide_dictionary(icd9_words, DIV_N)
 #Come Dictionary
 come_words = devide_dictionary(come_words, DIV_N)
-
+"""
 
 def randomPatient():
 	Time_points = 10
@@ -90,29 +88,28 @@ def randomPatient():
 	#pat['index'] = randomString()
         tmp = ''
 	pat_id = randomString()
-	dic_id = random.randint(0, DIV_N-1) 
 	change_id = random.randint(0, Time_points-1)
 
         #時系列ごとに疾患が増えて行 -> MD commentの所に加えて行く
         for t in xrange(Time_points):
-		random_int = random.randint(1,5)
-        	dig_code = randomText(random_int, icd9_words[dic_id])
-        	ana_pos = randomText(random_int + 10, rad_words[dic_id])
+		random_int = random.randint(1,3)
+        	dig_code = randomText(random_int, icd9_words)
+        	ana_pos = randomText(random_int + 3, rad_words)
 		if int(t) == int(change_id):
-			tmp_Triage = dig_code + ana_pos + randomText(random_int + 10, wjn_words[dic_id])
+			tmp_Triage = dig_code + ana_pos + randomText(random_int + 3, wjn_words)
 		else:	
-			tmp_Triage = dig_code + ana_pos + randomText(random_int, wjn_words[dic_id])
+			tmp_Triage = dig_code + ana_pos + randomText(random_int, wjn_words)
                 tmp += tmp_Triage
                 t_dict = {}
 		t_dict = { 
 				"patient_id": pat_id,
-				"ChiefComplaint" : dig_code,
-				"TriageAssessment" : tmp_Triage,
-				"MDcomments" : tmp + randomText(random_int, come_words[dic_id]),
+				"Subject" : dig_code,
+				"Object" : tmp_Triage,
+				"Assessment" : tmp + randomText(random_int, come_words),
+				"Plan" : tmp + randomText(random_int, come_words),
 				"Age" : str(np.random.choice(range(20,80))),
 				"Sex" : np.random.choice(['M', 'F'])[0],
 				"Time" : t,
-				"dictionary_id" : dic_id,
 				"change_point" : change_id
 			}
 		p_dict[t] = t_dict
@@ -120,7 +117,6 @@ def randomPatient():
 	label = {}
 	label = {
 			"patient_id": pat_id,
-			"dictionary_id" : dic_id,
                         "change_point" : change_id
 		}
                 
@@ -150,8 +146,8 @@ if __name__ == "__main__":
     #jsonstring = json.dumps(pat_dics, ensure_ascii=False)
     #label_jsonstring = json.dumps(p_labels, ensure_ascii=False)
 
-    f = codecs.open("make_dataset/sample/json_time_series_patient.json","w","utf-8")
-    f_label = codecs.open("make_dataset/sample/p_labels.json","w","utf-8")
+    f = codecs.open("make_dataset/small/small_json_time_series_patient.json","w","utf-8")
+    f_label = codecs.open("make_dataset/small/small_p_labels.json","w","utf-8")
     #f = open("tmp/json_time_series_patient.json", "w")
     json.dump(pat_dics, f, ensure_ascii=False)
     json.dump(p_labels, f_label, ensure_ascii=False)

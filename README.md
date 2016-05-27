@@ -1,5 +1,7 @@
 # Generating_karte
 This repository is for the purpose of research in medical records processing.
+##Task1  
+Generate medical records for evaluating patient similarity
 
 #Patient History View  
 1st step:  
@@ -29,4 +31,6 @@ This repository is for the purpose of research in medical records processing.
 	**Visualizing Similarity Patients**  
 	python patient_similarity/find_high_frequency.py  
 	-> tree.html is showing the high frequency words between similar patients  
+
+
 

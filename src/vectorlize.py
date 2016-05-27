@@ -48,42 +48,14 @@ def load_sample():
         return count, index
 
 if __name__ == "__main__":
-        count, index = load_sample()
-	"""
-	p_text, p_json = read_json("make_dataset/small/small_json_time_series_patient.json")
-	collection = collections.Counter(p_text)
+        #count, index = load_sample()
+
+	p_text, p_json = read_json("output/small/small_json_time_series_patient.json")
+
         #Unidentified two spaces
-        tmp = p_json["0"]["3"]["Plan"].split("  ")
-	collection = collections.Counter(tmp)
+        texts = p_json["0"]["3"]["Plan"].split("  ")
+	count_m, index = dictionarize_text(texts)
 
-        from sklearn.feature_extraction import DictVectorizer
-	v = DictVectorizer()
-	#print v.fit_transform(collection)
-        #print collection
+	sm = get_cov(texts, index)
+	print sm
 
-
-        #Shuffle
-	#print tmp
-        old_tmp = tmp  #dictionary
-        random.shuffle(tmp)
-        #print tmp
-
-	from sklearn.feature_extraction import DictVectorizer
-        v = DictVectorizer()
-        print v.fit_transform(collection)
-
-        #Prepare s_matrix
-        M = len(collection)
-        s_matrix = np.zeros((M, M)) 
-
-        for i in xrange(len(tmp)):
-            j = return_index(tmp[i], old_tmp)
-            if i > 0:
-              m1 = return_index(tmp[i], old_tmp)
-              s_matrix[j][m1] += 1
-            if i < len(tmp):
-	      m2 = return_index(tmp[i], old_tmp)
-              s_matrix[j][m2] += 1
-              
-        print s_matrix 
-	"""

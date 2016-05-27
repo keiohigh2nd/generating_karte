@@ -146,8 +146,8 @@ if __name__ == "__main__":
     #jsonstring = json.dumps(pat_dics, ensure_ascii=False)
     #label_jsonstring = json.dumps(p_labels, ensure_ascii=False)
 
-    f = codecs.open("make_dataset/small/small_json_time_series_patient.json","w","utf-8")
-    f_label = codecs.open("make_dataset/small/small_p_labels.json","w","utf-8")
+    f = codecs.open("output/small/small_json_time_series_patient.json","w","utf-8")
+    f_label = codecs.open("output/small/small_p_labels.json","w","utf-8")
     #f = open("tmp/json_time_series_patient.json", "w")
     json.dump(pat_dics, f, ensure_ascii=False)
     json.dump(p_labels, f_label, ensure_ascii=False)

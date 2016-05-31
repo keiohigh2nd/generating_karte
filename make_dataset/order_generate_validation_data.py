@@ -49,10 +49,10 @@ def devide_dictionary(words, div_n):
 
 random.seed(2014)
 
-icd9_words = read_file('small_data/icd9_words_only.txt')
-rad_words = read_file('small_data/rad_words_only.txt')
-wjn_words = read_file('small_data/wjn_words_only.txt')
-come_words = read_file('small_data/come_words_only.txt')
+icd9_words = read_file('data/one_icd9_words_only.txt')
+rad_words = read_file('data/one_rad_words_only.txt')
+wjn_words = read_file('data/one_wjn_words_only.txt')
+come_words = read_file('data/one_come_words_only.txt')
 
 
 icd9_words = icd9_words.split("\r\n")
@@ -82,31 +82,36 @@ come_words = devide_dictionary(come_words, DIV_N)
 """
 
 def randomPatient():
-	Time_points = 10
+	Time_points = 1
 	global vocab
 	p_dict = {}
 	#pat['index'] = randomString()
         tmp = ''
 	pat_id = randomString()
 	change_id = random.randint(0, Time_points-1)
-
         #時系列ごとに疾患が増えて行 -> MD commentの所に加えて行く
         for t in xrange(Time_points):
-		random_int = random.randint(1,3)
-        	dig_code = randomText(random_int, icd9_words)
-        	ana_pos = randomText(random_int + 3, rad_words)
+		random_int = 2
+        	dig_code = randomText(1, icd9_words)
+        	ana_pos = randomText(random_int , rad_words)
 		if int(t) == int(change_id):
-			tmp_Triage = dig_code + ana_pos + randomText(random_int + 3, wjn_words)
+			tmp_Triage = dig_code + ' ' + ana_pos + ' ' + randomText(random_int + 1, wjn_words)
 		else:
-			tmp_Triage = dig_code + ana_pos + randomText(random_int, wjn_words)
+			tmp_Triage = dig_code + ' ' + ana_pos + ' ' + randomText(random_int, wjn_words)
                 tmp += tmp_Triage
                 t_dict = {}
+                word_list = tmp + ' ' + randomText(random_int, come_words)
+                word_list = word_list.split(" ")
+                print word_list
+		random.shuffle(word_list)
+                print word_list
+                word_list = " ".join(word_list)
 		t_dict = {
 				"patient_id": pat_id,
 				"Subject" : dig_code,
 				"Object" : tmp_Triage,
-				"Assessment" : tmp + randomText(random_int, come_words),
-				"Plan" : tmp + randomText(random_int, come_words),
+				"Assessment" : word_list,
+				"Plan" : word_list,
 				"Age" : str(np.random.choice(range(20,80))),
 				"Sex" : np.random.choice(['M', 'F'])[0],
 				"Time" : t,
@@ -146,8 +151,8 @@ if __name__ == "__main__":
     #jsonstring = json.dumps(pat_dics, ensure_ascii=False)
     #label_jsonstring = json.dumps(p_labels, ensure_ascii=False)
 
-    f = codecs.open("output/small/small_json_time_series_patient.json","w","utf-8")
-    f_label = codecs.open("output/small/small_p_labels.json","w","utf-8")
+    f = codecs.open("output/one_json_time_series_patient.json","w","utf-8")
+    f_label = codecs.open("output/one_p_labels.json","w","utf-8")
     #f = open("tmp/json_time_series_patient.json", "w")
     json.dump(pat_dics, f, ensure_ascii=False)
     json.dump(p_labels, f_label, ensure_ascii=False)

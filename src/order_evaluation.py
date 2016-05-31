@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json, random
 import detection
 import collections
@@ -47,15 +48,44 @@ def load_sample():
         print sm
         return count, index
 
+def find_similar_patients(matrix, N):
+	import itertools
+	combs = itertools.combinations(np.arange(N),2)
+        for comb in combs:
+		tmp = matrix[comb[0]]-matrix[comb[1]]
+		print tmp
 if __name__ == "__main__":
         #count, index = load_sample()
 
-	p_text, p_json = read_json("output/small/small_json_time_series_patient.json")
+	p_text, p_json = read_json("output/one_json_time_series_patient.json")
 
         #Unidentified two spaces
-        texts = p_json["0"]["3"]["Plan"].split("  ")
-	count_m, index = dictionarize_text(texts)
+        num_patients = len(p_json)
 
-	sm = get_cov(texts, index)
-	print sm
+	sm_patients = []
+        order_labels = []
+	#Making dictinary
+	dic_arr = []
+	for t in xrange(num_patients):
+		tmp = p_json["%s"%t]["0"]["Plan"].split(" ")
+		tmp_cl = collections.Counter(tmp)
+		dic_arr.append(tmp_cl)
 
+	from sklearn.feature_extraction import DictVectorizer
+	v = DictVectorizer()
+	count = v.fit_transform(dic_arr)
+	index = v.get_feature_names()
+
+	#When writing json, you have to care "0" and "t"
+        topic = p_json["0"]["0"]["Subject"]
+	for t in xrange(num_patients):
+        	texts = p_json["%s"%t]["0"]["Plan"].split(" ")
+        	order_label = texts.index(topic)
+		#count_m, index = dictionarize_text(texts)
+		#Generate Matrix
+		sm = get_cov(texts, index)
+		sm_patients.append(sm)
+		order_labels.append(order_label)
+
+	###次元がsm行列のそれぞれ違う。それを揃える必要がある。
+	find_similar_patients(sm_patients, num_patients)

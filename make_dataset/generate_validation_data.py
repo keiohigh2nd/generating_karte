@@ -6,7 +6,7 @@ from dicttoxml import dicttoxml
 import string
 import random
 import shelve
-import numpy as np 
+import numpy as np
 import scipy.sparse as sparse
 import cPickle as pickle
 from collections import defaultdict, namedtuple
@@ -46,7 +46,7 @@ def devide_dictionary(words, div_n):
     	size = l / div_n + (l % div_n > 0)
     	return [words[i:i+size] for i in range(0, l, size)]
 
- 
+
 random.seed(2014)
 
 icd9_words = read_file('data/icd9_words_only.txt')
@@ -77,7 +77,7 @@ DIV_N = 30
 wjn_words = devide_dictionary(wjn_words, DIV_N)
 #Radiology words
 rad_words = devide_dictionary(rad_words, DIV_N)
-#ICD9 disease name or chief complaint 
+#ICD9 disease name or chief complaint
 icd9_words = devide_dictionary(icd9_words, DIV_N)
 #Come Dictionary
 come_words = devide_dictionary(come_words, DIV_N)
@@ -90,7 +90,7 @@ def randomPatient():
 	#pat['index'] = randomString()
         tmp = ''
 	pat_id = randomString()
-	dic_id = random.randint(0, DIV_N-1) 
+	dic_id = random.randint(0, DIV_N-1)
 	change_id = random.randint(0, Time_points-1)
 
         #時系列ごとに疾患が増えて行 -> MD commentの所に加えて行く
@@ -100,15 +100,16 @@ def randomPatient():
         	ana_pos = randomText(random_int + 10, rad_words[dic_id])
 		if int(t) == int(change_id):
 			tmp_Triage = dig_code + ana_pos + randomText(random_int + 10, wjn_words[dic_id])
-		else:	
+		else:
 			tmp_Triage = dig_code + ana_pos + randomText(random_int, wjn_words[dic_id])
                 tmp += tmp_Triage
                 t_dict = {}
-		t_dict = { 
+		t_dict = {
 				"patient_id": pat_id,
-				"ChiefComplaint" : dig_code,
-				"TriageAssessment" : tmp_Triage,
-				"MDcomments" : tmp + randomText(random_int, come_words[dic_id]),
+				"Subject" : dig_code,
+				"Object" : tmp_Triage,
+				"Assesment" : tmp + randomText(random_int, come_words[dic_id]),
+				"Plan" : tmp + randomText(random_int, come_words[dic_id]),
 				"Age" : str(np.random.choice(range(20,80))),
 				"Sex" : np.random.choice(['M', 'F'])[0],
 				"Time" : t,
@@ -123,7 +124,7 @@ def randomPatient():
 			"dictionary_id" : dic_id,
                         "change_point" : change_id
 		}
-                
+
         return p_dict, label
 
 def generate_patients(n):
@@ -156,4 +157,4 @@ if __name__ == "__main__":
     json.dump(pat_dics, f, ensure_ascii=False)
     json.dump(p_labels, f_label, ensure_ascii=False)
 
-    
+

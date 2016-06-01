@@ -102,9 +102,8 @@ def randomPatient():
                 t_dict = {}
                 word_list = tmp + ' ' + randomText(random_int, come_words)
                 word_list = word_list.split(" ")
-                print word_list
+		#Shuffle words to predict order
 		random.shuffle(word_list)
-                print word_list
                 word_list = " ".join(word_list)
 		t_dict = {
 				"patient_id": pat_id,

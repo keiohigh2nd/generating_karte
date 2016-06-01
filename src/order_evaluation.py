@@ -49,11 +49,50 @@ def load_sample():
         return count, index
 
 def find_similar_patients(matrix, N):
+        import itertools
+        combs = itertools.combinations(np.arange(N),2)
+        min_val = 1000
+        min_comb = [1,2]
+        for comb in combs:
+                tmp = matrix[comb[0]]-matrix[comb[1]]
+                tmp = tmp*tmp
+                tmp_all = tmp.sum()
+                print "%s -- %s"%(comb, tmp_all)
+                if min_val > tmp_all:
+                        min_val = tmp_all
+                        min_comb = comb
+        return min_comb
+
+
+def find_similar_patients_topic(matrix, N, topic_index):
 	import itertools
 	combs = itertools.combinations(np.arange(N),2)
+	min_val = 1000
+	min_comb = [1,2]
         for comb in combs:
 		tmp = matrix[comb[0]]-matrix[comb[1]]
-		print tmp
+		tmp = tmp[topic_index,:]*tmp[topic_index,:]
+		tmp_all = tmp.sum()
+		print "%s -- %s"%(comb, tmp_all)
+		if min_val > tmp_all:
+			min_val = tmp_all
+			min_comb = comb
+	return min_comb		
+	
+def find_similar_label(arr):
+	Num = len(arr)
+	import itertools,math
+        combs = itertools.combinations(np.arange(Num),2)
+	min_val = 1000
+	min_comb = [1,2]
+	for comb in combs:
+		tmp = math.fabs(arr[comb[0]]-arr[comb[1]])
+		print "%s -- %s"%(comb, tmp)
+		if min_val > tmp:
+			min_val = tmp
+			min_comb = comb
+	return min_comb
+
 if __name__ == "__main__":
         #count, index = load_sample()
 
@@ -67,6 +106,7 @@ if __name__ == "__main__":
 	#Making dictinary
 	dic_arr = []
 	for t in xrange(num_patients):
+		print str(t) + "----" + p_json["%s"%t]["0"]["Plan"]
 		tmp = p_json["%s"%t]["0"]["Plan"].split(" ")
 		tmp_cl = collections.Counter(tmp)
 		dic_arr.append(tmp_cl)
@@ -78,6 +118,8 @@ if __name__ == "__main__":
 
 	#When writing json, you have to care "0" and "t"
         topic = p_json["0"]["0"]["Subject"]
+	topic_index = index.index(topic)
+	#ここでの問題はトピックで索引しているのに、行列の引き算はすべての計算でやっているところ
 	for t in xrange(num_patients):
         	texts = p_json["%s"%t]["0"]["Plan"].split(" ")
         	order_label = texts.index(topic)
@@ -88,4 +130,5 @@ if __name__ == "__main__":
 		order_labels.append(order_label)
 
 	###次元がsm行列のそれぞれ違う。それを揃える必要がある。
-	find_similar_patients(sm_patients, num_patients)
+	print find_similar_patients_topic(sm_patients, num_patients, topic_index)
+	print find_similar_label(order_labels)	

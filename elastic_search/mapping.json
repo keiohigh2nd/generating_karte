@@ -1,0 +1,59 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "ngram_analyzer": {
+          "tokenizer": "ngram_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "nGram",
+          "min_gram": "2",
+          "max_gram": "3",
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "patient": {
+      "karte": {
+        "patient_id": {
+          "type": "integer"
+        },
+        "Subject": {
+          "type": "string",
+          "analyzer": "ngram_analyzer"
+        },
+        "Object": {
+          "type": "string",
+          "analyzer": "ngram_analyzer"
+        },
+        "Assessment": {
+          "type": "string",
+          "analyzer": "ngram_analyzer"
+        },
+        "Plan": {
+          "type": "string",
+          "analyzer": "ngram_analyzer"
+        },
+        "Age": {
+          "type": "integer"
+        },
+        "Sex": {
+          "type": "integer"
+        },
+        "Time": {
+          "type": "integer"
+        },
+        "change_id": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

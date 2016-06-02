@@ -1,0 +1,31 @@
+settings:
+  index:
+    analysis:
+      analyzer:
+        my_analyzer:
+          type: custom
+          tokenizer:
+            kuromoji_tokenizer
+          filter:
+            - kuromoji_baseform
+mappings:
+  Patient:
+    properties:
+      patient_id:
+        type: integer
+      Subject:
+        type: string
+      Object:
+        type: string
+      Assesment:
+        type: string
+      Plan:
+        type: string
+      Age:
+	type: integer
+      Sex:
+	type: string
+      Time:
+	type: integer
+      change_point:
+	type: integer

@@ -1,23 +1,12 @@
 {
   "settings": {
     "analysis": {
-      "filter": {
-        "pos_filter": {
-          "type": "kuromoji_part_of_speech",
-          "stoptags": [
-            "助詞-格助詞-一般",
-            "助詞-終助詞"
-          ]
-        },
-        "greek_lowercase_filter": {
-          "type": "lowercase",
-          "language": "greek"
+      "analyzer": {
+        "ngram_analyzer": {
+          "tokenizer": "ngram_tokenizer"
         }
       },
       "tokenizer": {
-        "kuromoji": {
-          "type": "kuromoji_tokenizer"
-        },
         "ngram_tokenizer": {
           "type": "nGram",
           "min_gram": "2",

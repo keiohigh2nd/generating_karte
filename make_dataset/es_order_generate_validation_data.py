@@ -81,7 +81,7 @@ icd9_words = devide_dictionary(icd9_words, DIV_N)
 come_words = devide_dictionary(come_words, DIV_N)
 """
 
-def randomPatient(p_id, f):
+def randomPatient(p_id, f, i_name):
 	Time_points = 1
 	global vocab
 	p_dict = {}
@@ -91,9 +91,6 @@ def randomPatient(p_id, f):
 	change_id = random.randint(0, Time_points-1)
         #時系列ごとに疾患が増えて行 -> MD commentの所に加えて行く
 
-	label_json = {"index": { "_index": "index_name", "_type": "Patient", "_id":"%s"%p_id}}
-	f.write(label_json)
-	f.write("\n")
         for t in xrange(Time_points):
 		random_int = 2
         	dig_code = randomText(1, icd9_words)
@@ -109,25 +106,39 @@ def randomPatient(p_id, f):
 		#Shuffle words to predict order
 		random.shuffle(word_list)
                 word_list = " ".join(word_list)
+		age_tmp = str(np.random.choice(range(20,80)))
+		sex_tmp = np.random.choice(['M', 'F'])[0]
 		t_dict = {
 				"patient_id": pat_id,
 				"Subject" : dig_code,
 				"Object" : tmp_Triage,
 				"Assessment" : word_list,
 				"Plan" : word_list,
-				"Age" : str(np.random.choice(range(20,80))),
-				"Sex" : np.random.choice(['M', 'F'])[0],
+				"Age" : age_tmp,
+				"Sex" : sex_tmp,
 				"Time" : t,
 				"change_point" : change_id
 			}
-		f.write("id:")
 		p_dict[t] = t_dict
-	label_json = {"index": { "_index": "index_name", "_type": "Patient", "_id":"%s"%p_id}}
+	label_1 = { "index": { "_index": "test2", "_type": "Patient", "_id": "%s"%p_id } }
+	#label_2 = { "id":"%s"%p_id, "Age":"%s"%age_tmp, "Sex":"%s"%sex_tmp, "Department":"Not Yet" }
+	#label_3 = { "index": { "_index": "test2", "_type":  "karte", "_parent": "%s"%p_id } }
+	#label_4 = { "id": "%s"%p_id, "Subject": "%s"%dig_code, "Object":"%s"%tmp_Triage, "Assesment":"%s"%word_list, "Plan":"%s"%word_list }
+
+	f.write("{ \"index\": { \"_index\": \"%s\", \"_type\": \"Patient\", \"_id\": \"%s\" } }"%(i_name, p_id))
+	f.write("\n")
+        f.write("{ \"id\":\"%s\", \"Age\":\"%s\", \"Sex\":\"%s\", \"Department\":\"Not Yet\" }"%(p_id, age_tmp, sex_tmp))	
+	f.write("\n")
+	f.write("{ \"index\": { \"_index\": \"%s\", \"_type\":  \"karte\", \"_parent\": \"%s\" } }"%(i_name, p_id))
+	f.write("\n")
+	f.write("{ \"id\": \"%s\", \"Subject\": \"%s\", \"Object\": \"%s\", \"Assesment\": \"%s\", \"Plan\": \"%s\" }"%(p_id, dig_code, tmp_Triage, word_list, word_list))
+	f.write("\n")
+
 	label = {
 			"patient_id": pat_id,
                         "change_point" : change_id
 		}
-        return p_dict, label, label_json
+        return p_dict, label, label_1
 
 def generate_patients(n):
     for _ in xrange(n):
@@ -146,10 +157,11 @@ if __name__ == "__main__":
 
     pat_dics = {}
     p_labels = {}
-    f = codecs.open("test.txt","w","utf-8")
+    f = codecs.open("elastic_search/es_test.txt","w","utf-8")
 
+    index_name = sys.argv[2]
     for t in xrange(n):
-        pat_dics[t], p_labels[t], lab = randomPatient(t,f)
+       pat_dics[t], p_labels[t], lab = randomPatient(t,f, index_name)
 
     f.close()
 

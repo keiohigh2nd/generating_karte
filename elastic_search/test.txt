@@ -1,0 +1,8 @@
+{ "index": { "_index": "test2", "_type": "Patient", "_id": "0" } }
+{ "id":"0", "Age":"44", "Sex":"M", "Department":"Not Yet" }
+{ "index": { "_index": "test2", "_type":  "karte", "_parent": "0" } }
+{ "id": "0", "Subject": "腹水", "Object": "腹水 非特異的 気腫性変化 認めず おそらく 辛うじて", "Assesment": "腹水 辛うじて 拡張 拡張 おそらく 非特異的 気腫性変化 認めず", "Plan": "腹水 辛うじて 拡張 拡張 おそらく 非特異的 気腫性変化 認めず" }
+{ "index": { "_index": "test2", "_type": "Patient", "_id": "1" } }
+{ "id":"1", "Age":"51", "Sex":"F", "Department":"Not Yet" }
+{ "index": { "_index": "test2", "_type":  "karte", "_parent": "1" } }
+{ "id": "1", "Subject": "腹水", "Object": "腹水 肺癌 早期濃染 辛うじて 辛うじて 辛うじて", "Assesment": "腹水 辛うじて 辛うじて 外傷 早期濃染 辛うじて 肺癌 開口異常", "Plan": "腹水 辛うじて 辛うじて 外傷 早期濃染 辛うじて 肺癌 開口異常" }

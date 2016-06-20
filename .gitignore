@@ -12,4 +12,5 @@ small_data/
 make_dataset/small
 output
 elasticsearch
+processed
 

@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import sys
 from xml.dom.minidom import parseString
 from dicttoxml import dicttoxml
@@ -9,6 +11,7 @@ import scipy.sparse as sparse
 import cPickle as pickle
 from collections import defaultdict, namedtuple
 import codecs, json
+import make_Object 
 
 def randomString(length=16):
 	return "".join([random.choice(string.letters) for _ in xrange(length)])
@@ -47,37 +50,30 @@ def devide_dictionary(words, div_n):
 
 random.seed(2014)
 
-icd9_words = read_file('data/one_icd9_words_only.txt')
-rad_words = read_file('data/one_rad_words_only.txt')
-wjn_words = read_file('data/one_wjn_words_only.txt')
-come_words = read_file('data/one_come_words_only.txt')
+AP_words = read_file('sample_karte/qb_karte.txt')
+A_words = read_file('sample_karte/problem_list.txt')
+P_words = read_file('sample_karte/Action_list.txt')
+
+History_words = read_file('sample_karte/History.txt')
+O_words = read_file('sample_karte/O.txt')
+S_words = read_file('sample_karte/S.txt')
 
 
-icd9_words = icd9_words.split("\r\n")
-icd9_words[-1] = icd9_words[-1].strip("\n")
+AP_words = AP_words.split("\n")
+A_words = A_words.split("\n")
+P_words = P_words.split("\n")
 
-come_words = come_words.split("\r\n")
-come_words[-1] = come_words[-1].strip("\n")
-
-rad_words = rad_words.split("\n")
-wjn_words = wjn_words.split("\n")
+del P_words[-1]
+del A_words[-1]
 
 
-"""
-wjn_words = file('data/wjn_words_only.txt').read().splitlines()
-rad_words = file('data/rad_words_only.txt').read().splitlines()
-icd9_words = file('data/icd9_words_only.txt').read().splitlines()
-come_words = file('data/come_words_only.txt').read().splitlines()
-DIV_N = 30
-#Japanese words
-wjn_words = devide_dictionary(wjn_words, DIV_N)
-#Radiology words
-rad_words = devide_dictionary(rad_words, DIV_N)
-#ICD9 disease name or chief complaint
-icd9_words = devide_dictionary(icd9_words, DIV_N)
-#Come Dictionary
-come_words = devide_dictionary(come_words, DIV_N)
-"""
+History_words = History_words.split("\n")
+#History_words[-1] = History_words[-1].strip("\n")
+
+O_words = O_words.split("\n")
+S_words = S_words.split("\n")
+
+
 
 def randomPatient(p_id, f, i_name):
 	Time_points = 1
@@ -90,16 +86,21 @@ def randomPatient(p_id, f, i_name):
         #時系列ごとに疾患が増えて行 -> MD commentの所に加えて行く
 
         for t in xrange(Time_points):
-		random_int = 2
-        	dig_code = randomText(1, icd9_words)
-        	ana_pos = randomText(random_int , rad_words)
+		random_int = random.randint(3,5)
+        	Subject = randomText(3, S_words)
+        	Object = randomText(random_int , O_words)
+        	noise = randomText(random_int + 2 , AP_words)
+		Assesment = "#%s " % randomText(1 , A_words)
+		Plan = randomText(2 , P_words)
+
 		if int(t) == int(change_id):
-			tmp_Triage = dig_code + ' ' + ana_pos + ' ' + randomText(random_int + 1, wjn_words)
+			tmp_Triage = randomText(random_int + 10, History_words)
 		else:
-			tmp_Triage = dig_code + ' ' + ana_pos + ' ' + randomText(random_int, wjn_words)
+			tmp_Triage = randomText(random_int, History_words)
                 tmp += tmp_Triage
                 t_dict = {}
-                word_list = tmp + ' ' + randomText(random_int, come_words)
+		#順序をここで変えて順番の大切さを見るため
+                word_list = noise + Plan
                 word_list = word_list.split(" ")
 		#Shuffle words to predict order
 		random.shuffle(word_list)
@@ -108,10 +109,10 @@ def randomPatient(p_id, f, i_name):
 		sex_tmp = np.random.choice(['M', 'F'])[0]
 		t_dict = {
 				"patient_id": pat_id,
-				"Subject" : dig_code,
-				"Object" : tmp_Triage,
-				"Assessment" : word_list,
-				"Plan" : word_list,
+				"Subject" : Subject,
+				"Object" : Object,
+				"History" : tmp_Triage,
+				"A/P" : Assesment + word_list,
 				"Age" : age_tmp,
 				"Sex" : sex_tmp,
 				"Time" : t,
@@ -123,13 +124,15 @@ def randomPatient(p_id, f, i_name):
 	#label_3 = { "index": { "_index": "test2", "_type":  "karte", "_parent": "%s"%p_id } }
 	#label_4 = { "id": "%s"%p_id, "Subject": "%s"%dig_code, "Object":"%s"%tmp_Triage, "Assesment":"%s"%word_list, "Plan":"%s"%word_list }
 
+
 	f.write("{ \"index\": { \"_index\": \"%s\", \"_type\": \"Patient\", \"_id\": \"%s\" } }"%(i_name, p_id))
 	f.write("\n")
         f.write("{ \"id\":\"%s\", \"Age\":\"%s\", \"Sex\":\"%s\", \"Department\":\"Not Yet\" }"%(p_id, age_tmp, sex_tmp))	
 	f.write("\n")
 	f.write("{ \"index\": { \"_index\": \"%s\", \"_type\":  \"karte\", \"_parent\": \"%s\" } }"%(i_name, p_id))
 	f.write("\n")
-	f.write("{ \"id\": \"%s\", \"Subject\": \"%s\", \"Object\": \"%s\", \"Assesment\": \"%s\", \"Plan\": \"%s\" }"%(p_id, dig_code, tmp_Triage, word_list, word_list))
+	f.write("{ \"id\": \"%s\", \"Subject\": \"%s\", \"Object\": \"%s\", \"History\": \"%s\", \"A/P\": \"%s\" }"%(p_id, Subject, Object, tmp_Triage,  Assesment + word_list))
+	#f.write("{ \"id\": \"%s\", \"Subject\": \"%s\", \"Object\": \"%s\", \"History\": \"%s\", \"A/P\": \"%s\" }"%(p_id, Subject, Object, tmp_Triage,  word_list))
 	f.write("\n")
 
 	label = {
@@ -155,7 +158,7 @@ if __name__ == "__main__":
 
     pat_dics = {}
     p_labels = {}
-    f = codecs.open("elastic_search/es_test.txt","w","utf-8")
+    f = codecs.open("elastic_search/es_sample_karte.txt","w","utf-8")
 
     index_name = sys.argv[2]
     for t in xrange(n):
@@ -164,13 +167,12 @@ if __name__ == "__main__":
     f.close()
 
     f.close()
-    #jsonstring = json.dumps(pat_dics, ensure_ascii=False)
-    #label_jsonstring = json.dumps(p_labels, ensure_ascii=False)
+    jsonstring = json.dumps(pat_dics, ensure_ascii=False)
+    label_jsonstring = json.dumps(p_labels, ensure_ascii=False)
 
-    #f = codecs.open("output/one_json_time_series_patient.json","w","utf-8")
-    #f_label = codecs.open("output/one_p_labels.json","w","utf-8")
-    #f = open("tmp/json_time_series_patient.json", "w")
-    #json.dump(pat_dics, f, ensure_ascii=False)
-    #json.dump(p_labels, f_label, ensure_ascii=False)
+    fa = codecs.open("output/one_json_time_series_patient.json","w","utf-8")
+    f_label = codecs.open("output/one_p_labels.json","w","utf-8")
+    json.dump(pat_dics, fa, ensure_ascii=False)
+    json.dump(p_labels, f_label, ensure_ascii=False)
 
 

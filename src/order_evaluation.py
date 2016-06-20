@@ -103,11 +103,12 @@ if __name__ == "__main__":
 
 	sm_patients = []
         order_labels = []
+
 	#Making dictinary
 	dic_arr = []
 	for t in xrange(num_patients):
-		print str(t) + "----" + p_json["%s"%t]["0"]["Plan"]
-		tmp = p_json["%s"%t]["0"]["Plan"].split(" ")
+		#print str(t) + "----" + p_json["%s"%t]["0"]["A/P"]
+		tmp = p_json["%s"%t]["0"]["A/P"].split(" ")
 		tmp_cl = collections.Counter(tmp)
 		dic_arr.append(tmp_cl)
 
@@ -117,11 +118,11 @@ if __name__ == "__main__":
 	index = v.get_feature_names()
 
 	#When writing json, you have to care "0" and "t"
-        topic = p_json["0"]["0"]["Subject"]
-	topic_index = index.index(topic)
+        topic = p_json["0"]["0"]["A/P"].split(" ")
+	topic_index = index.index(topic[0])
 	#ここでの問題はトピックで索引しているのに、行列の引き算はすべての計算でやっているところ
 	for t in xrange(num_patients):
-        	texts = p_json["%s"%t]["0"]["Plan"].split(" ")
+        	texts = p_json["%s"%t]["0"]["A/P"].split(" ")
         	order_label = texts.index(topic)
 		#count_m, index = dictionarize_text(texts)
 		#Generate Matrix
